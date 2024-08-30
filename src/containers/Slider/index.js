@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useData } from "../../contexts/DataContext";
 import { getMonth } from "../../helpers/Date";
-
 import "./style.scss";
 
 const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
+  
+
   const byDateDesc = data?.focus.sort((evtA, evtB) =>
     new Date(evtA.date) > new Date(evtB.date) ? -1 : 1
   );
@@ -16,8 +17,12 @@ const Slider = () => {
       setIndex((prevIndex) => (prevIndex + 1) % byDateDesc.length);
     }, 5000);
 
-    return () => clearInterval(intervalId);
+    return () => clearInterval(intervalId); 
   }, [byDateDesc.length]);
+
+  const handlePaginationClick = (idx) => {
+    setIndex(idx);
+  };
 
   return (
     <div className="SlideCardList">
@@ -34,16 +39,16 @@ const Slider = () => {
         </div>
       ))}
 
-      {/* Pagination buttons */}
       <div className="SlideCard__paginationContainer">
         <div className="SlideCard__pagination">
-          {byDateDesc?.map((event) => (
+          {byDateDesc.map((event, radioIdx) => (
             <input
-              key={`radio-${event.id}`}
+              key={`pagination-${event.id}`}
               type="radio"
               name="radio-button"
-              checked={index === byDateDesc.indexOf(event)}
-              onChange={() => setIndex(byDateDesc.indexOf(event))}
+              checked={index === radioIdx}
+              onChange={() => handlePaginationClick(radioIdx)}
+              readOnly
             />
           ))}
         </div>
