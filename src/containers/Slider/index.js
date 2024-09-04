@@ -6,18 +6,21 @@ import "./style.scss";
 const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
-  
 
-  const byDateDesc = data?.focus.sort((evtA, evtB) =>
-    new Date(evtA.date) > new Date(evtB.date) ? -1 : 1
-  );
+  const byDateDesc = data?.focus?.sort(
+    (evtA, evtB) => (new Date(evtA.date) > new Date(evtB.date) ? -1 : 1)
+  ) || [];
 
   useEffect(() => {
+    if (byDateDesc.length === 0) {
+      return () => {};  // Return a no-op function to satisfy the ESLint rule
+    }
+
     const intervalId = setInterval(() => {
       setIndex((prevIndex) => (prevIndex + 1) % byDateDesc.length);
     }, 5000);
 
-    return () => clearInterval(intervalId); 
+    return () => clearInterval(intervalId);
   }, [byDateDesc.length]);
 
   const handlePaginationClick = (idx) => {
@@ -26,8 +29,11 @@ const Slider = () => {
 
   return (
     <div className="SlideCardList">
-      {byDateDesc?.map((event, idx) => (
-        <div key={event.id} className={`SlideCard SlideCard--${index === idx ? "display" : "hide"}`}>
+      {byDateDesc.map((event, idx) => (
+        <div
+          key={event.id}
+          className={`SlideCard SlideCard--${index === idx ? "display" : "hide"}`}
+        >
           <img src={event.cover} alt="forum" />
           <div className="SlideCard__descriptionContainer">
             <div className="SlideCard__description">
