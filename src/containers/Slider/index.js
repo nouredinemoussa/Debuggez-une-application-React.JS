@@ -7,13 +7,14 @@ const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
 
+  // Tri des événements par date décroissante
   const byDateDesc = data?.focus?.sort(
     (evtA, evtB) => (new Date(evtA.date) > new Date(evtB.date) ? -1 : 1)
   ) || [];
 
   useEffect(() => {
     if (byDateDesc.length === 0) {
-      return () => {};  // Return a no-op function to satisfy the ESLint rule
+      return () => {};
     }
 
     const intervalId = setInterval(() => {
@@ -31,7 +32,7 @@ const Slider = () => {
     <div className="SlideCardList">
       {byDateDesc.map((event, idx) => (
         <div
-          key={event.id}
+          key={event.id ? event.id : `event-${idx}`} // Utiliser id ou créer une clé unique
           className={`SlideCard SlideCard--${index === idx ? "display" : "hide"}`}
         >
           <img src={event.cover} alt="forum" />
@@ -49,7 +50,7 @@ const Slider = () => {
         <div className="SlideCard__pagination">
           {byDateDesc.map((event, radioIdx) => (
             <input
-              key={`pagination-${event.id}`}
+              key={`pagination-${event.id ? event.id : `radio-${radioIdx}`}`} // Utiliser id ou créer une clé unique
               type="radio"
               name="radio-button"
               checked={index === radioIdx}
